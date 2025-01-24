@@ -41,11 +41,11 @@ def main() -> None:
     train_data, val_data, _ = load_data(DATA_PATH, batch_size=batch_size)
 
     # define name and writer
-    name: str = "run4"  # f"model_lr_{lr}_hs_{hidden_sizes}_{batch_size}_{epochs}"
+    name: str = "run5"  # f"model_lr_{lr}_hs_{hidden_sizes}_{batch_size}_{epochs}"
     writer: SummaryWriter = SummaryWriter(f"runs/{name}")
 
     # define model
-    model: torch.nn.Module = Cifar10ConvModel(0.2).to(device)
+    model: torch.nn.Module = Cifar10ConvModel(0.1).to(device)
 
     # define loss and optimizer
     loss: torch.nn.Module = torch.nn.CrossEntropyLoss()
