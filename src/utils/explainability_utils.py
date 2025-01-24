@@ -3,9 +3,7 @@ import torch
 import numpy as np
 
 
-def show_saliency_map_grid(
-    inputs, grads, targets, max_indices, threshold=0.3, ncol=None
-) -> None:
+def show_saliency_map_grid(inputs, grads, targets, max_indices, ncol=None) -> None:
     if ncol is None:
         ncol = 2
 
@@ -16,9 +14,6 @@ def show_saliency_map_grid(
     min_vals = no_channel_grads.amin(dim=(1, 2, 3), keepdim=True)
 
     normalized_grads = (no_channel_grads - min_vals) / (max_vals - min_vals)
-
-    # Apply threshold
-    binary_grads = torch.where(normalized_grads > threshold, 1.0, 0.0)
 
     # Create subplots
     num_images = inputs.size(0)
@@ -36,7 +31,7 @@ def show_saliency_map_grid(
         axes[row, col].axis("off")
 
         # Plot gradient image
-        grad_img = binary_grads[i].squeeze().cpu().numpy()
+        grad_img = normalized_grads[i].squeeze().cpu().numpy()
         axes[row, col + 1].imshow(grad_img, cmap="gray")
         axes[row, col + 1].set_title(f"Pred: {max_indices[i].item()}")
         axes[row, col + 1].axis("off")
