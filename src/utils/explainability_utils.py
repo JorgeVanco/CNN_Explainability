@@ -1,6 +1,26 @@
 import matplotlib.pyplot as plt
 import torch
+import torch.nn as nn
 import numpy as np
+
+
+def freeze_model(model: nn.Module) -> None:
+    model.eval()
+    for parameter in model.parameters():
+        parameter.requires_grad = False
+
+
+def compute_gradients_input(
+    model: nn.Module, inputs: torch.Tensor, device: torch.device
+) -> torch.Tensor:
+    inputs.requires_grad = True  # force grad
+    output = model(inputs.to(device))
+
+    # Compute gradients
+    max_output, max_indices = output.max(dim=-1)
+    max_output.sum().backward()
+
+    return max_indices
 
 
 def show_saliency_map_grid(inputs, grads, targets, max_indices, ncol=None) -> None:

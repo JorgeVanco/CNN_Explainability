@@ -1,14 +1,18 @@
 # deep learning libraries
 import torch
-from torch.utils.data import DataLoader
 from torch.jit import RecursiveScriptModule
 
 # other libraries
-from tqdm.auto import tqdm
 from typing import Final
 
 # own modules
-from src.utils import test_step, load_data, show_saliency_map_grid
+from src.utils import (
+    test_step,
+    load_data,
+    show_saliency_map_grid,
+    compute_gradients_input,
+    freeze_model,
+)
 
 # static variables
 DATA_PATH: Final[str] = "data"
@@ -30,24 +34,14 @@ def main() -> None:
     print(f"Model test accuracy: {accuracy}")
 
     # Freeze parameters
-    model.eval()
-    for parameter in model.parameters():
-        parameter.requires_grad = False
+    freeze_model(model)
 
     # get a batch
-    input, target = next(iter(train_data))
+    inputs, targets = next(iter(train_data))
 
-    for tensor in input:
-        tensor.grad = None
-        tensor.requires_grad = True  # force grad
-    input.requires_grad = True  # force grad
-    output = model(input.to(device))
+    max_indices = compute_gradients_input(model, inputs, device)
 
-    # Compute gradients
-    max_output, max_indices = output.max(dim=-1)
-    max_output.sum().backward()
-
-    show_saliency_map_grid(input.detach().cpu(), input.grad, target, max_indices)
+    show_saliency_map_grid(inputs.detach().cpu(), inputs.grad, targets, max_indices)
 
 
 if __name__ == "__main__":
