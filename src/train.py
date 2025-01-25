@@ -27,10 +27,9 @@ def main() -> None:
     print("Using: ", device)
 
     # hyperparameters
-    epochs: int = 100
-    lr: float = 5e-4
+    epochs: int = 50
+    lr: float = 1e-3
     batch_size: int = 32
-    hidden_sizes: tuple[int, ...] = (256, 128, 64)
 
     # empty nohup file
     open("nohup.out", "w").close()
@@ -41,7 +40,9 @@ def main() -> None:
     train_data, val_data, _ = load_data(DATA_PATH, batch_size=batch_size)
 
     # define name and writer
-    name: str = "run5"  # f"model_lr_{lr}_hs_{hidden_sizes}_{batch_size}_{epochs}"
+    name: str = (
+        "scheduler_run"  # f"model_lr_{lr}_hs_{hidden_sizes}_{batch_size}_{epochs}"
+    )
     writer: SummaryWriter = SummaryWriter(f"runs/{name}")
 
     # define model
@@ -49,13 +50,16 @@ def main() -> None:
 
     # define loss and optimizer
     loss: torch.nn.Module = torch.nn.CrossEntropyLoss()
-    optimizer: torch.optim.Optimizer = torch.optim.Adam(model.parameters(), lr=lr)
+    optimizer: torch.optim.Optimizer = torch.optim.Adam(
+        model.parameters(), lr=lr, weight_decay=1e-4
+    )
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
 
     # train loop
     for epoch in tqdm(range(epochs)):
         # call train step
         train_step(model, train_data, loss, optimizer, writer, epoch, device)
-
+        scheduler.step()
         # call val step
         val_step(model, val_data, loss, writer, epoch, device)
 

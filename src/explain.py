@@ -24,7 +24,7 @@ device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cp
 
 def main() -> None:
     train_data, val_data, test_data = load_data(DATA_PATH, batch_size=batch_size)
-    name: str = "transformations_run2"
+    name: str = "scheduler_run"
 
     # define model
     model: RecursiveScriptModule = torch.jit.load(f"models/{name}.pt").to(device)
