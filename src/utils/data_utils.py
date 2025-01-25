@@ -28,7 +28,12 @@ def load_data(
     """
 
     # define transforms
-    transformations = transforms.Compose([transforms.ToTensor()])
+    transformations = transforms.Compose(
+        [
+            transforms.ToTensor(),
+            transforms.Normalize(mean=[0.5, 0.5, 0.5], std=[0.247, 0.243, 0.261]),
+        ]
+    )
 
     train_dataset: torchvision.datasets.CIFAR10 = torchvision.datasets.CIFAR10(
         path, download=True, transform=transformations, train=True

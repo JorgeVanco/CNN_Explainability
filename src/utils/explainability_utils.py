@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import torch
 import torch.nn as nn
 import numpy as np
+from torchvision import transforms
 
 
 def freeze_model(model: nn.Module) -> None:
@@ -39,12 +40,21 @@ def show_saliency_map_grid(inputs, grads, targets, max_indices, ncol=None) -> No
     num_images = inputs.size(0)
     fig, axes = plt.subplots(num_images // ncol, ncol * 2, figsize=(10, 10))
 
+    invTrans = transforms.Compose(
+        [
+            transforms.Normalize(
+                mean=[0.0, 0.0, 0.0], std=[1 / 0.247, 1 / 0.243, 1 / 0.261]
+            ),
+            transforms.Normalize(mean=[-0.5, -0.5, -0.5], std=[1.0, 1.0, 1.0]),
+        ]
+    )
+
     for i in range(num_images):
         row = i // ncol
         col = (i % ncol) * 2
 
         # Plot input image
-        img = inputs[i] / 2 + 0.5  # unnormalize
+        img = invTrans(inputs[i])
         npimg = img.numpy()
         axes[row, col].imshow(np.transpose(npimg, (1, 2, 0)))
         axes[row, col].set_title(f"Class: {targets[i].item()}")
