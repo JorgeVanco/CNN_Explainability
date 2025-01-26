@@ -4,6 +4,19 @@ import torch.nn as nn
 import numpy as np
 from torchvision import transforms
 
+cifar_classes = {
+    0: "airplane",
+    1: "automobile",
+    2: "bird",
+    3: "cat",
+    4: "deer",
+    5: "dog",
+    6: "frog",
+    7: "horse",
+    8: "ship",
+    9: "truck",
+}
+
 
 def freeze_model(model: nn.Module) -> None:
     model.eval()
@@ -57,13 +70,13 @@ def show_saliency_map_grid(inputs, grads, targets, max_indices, ncol=None) -> No
         img = invTrans(inputs[i])
         npimg = img.numpy()
         axes[row, col].imshow(np.transpose(npimg, (1, 2, 0)))
-        axes[row, col].set_title(f"Class: {targets[i].item()}")
+        axes[row, col].set_title(f"Class: {cifar_classes[targets[i].item()]}")
         axes[row, col].axis("off")
 
         # Plot gradient image
         grad_img = normalized_grads[i].squeeze().cpu().numpy()
         axes[row, col + 1].imshow(grad_img, cmap="gray")
-        axes[row, col + 1].set_title(f"Pred: {max_indices[i].item()}")
+        axes[row, col + 1].set_title(f"Pred: {cifar_classes[max_indices[i].item()]}")
         axes[row, col + 1].axis("off")
 
     plt.tight_layout()
