@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_pdf import PdfPages
 import torch
 import torch.nn as nn
 import numpy as np
@@ -116,3 +117,10 @@ def show_class_model_visualization_grid(results, ncol=None):
     plt.suptitle("Class model visualization")
     plt.tight_layout()
     return fig
+
+
+def save_pdf(figures, path) -> None:
+    with PdfPages(path) as pdf:
+        for fig in figures:
+            pdf.savefig(fig)
+        plt.close()

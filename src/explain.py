@@ -19,6 +19,7 @@ from src.utils import (
     freeze_model,
     calc_mean_image,
     show_class_model_visualization_grid,
+    save_pdf,
 )
 
 # static variables
@@ -58,7 +59,7 @@ def calculate_class_model_visualization(
 
     freeze_model(model)
 
-    optimizer = torch.optim.Adam([input], lr=0.05, weight_decay=0.05)
+    optimizer = torch.optim.Adam([input], lr=0.1, weight_decay=0.001)
     for _ in tqdm(range(15000), desc="Calculating Class model visualization"):
         optimizer.zero_grad()
         output = model(input)
@@ -97,6 +98,10 @@ def main() -> None:
     # calculate class model visualization
     class_model_visualization = calculate_class_model_visualization(model, train_data)
     class_model_visualization.savefig(f"{dir_path}/class_model_visualization.png")
+
+    save_pdf(
+        [saliency_map, class_model_visualization], f"{dir_path}/explainability.pdf"
+    )
 
 
 if __name__ == "__main__":
