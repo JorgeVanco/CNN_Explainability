@@ -5,4 +5,6 @@ from .explainability_utils import (
     show_saliency_map_grid,
     freeze_model,
     compute_gradients_input,
+    calc_mean_image,
+    show_class_model_visualization_grid,
 )

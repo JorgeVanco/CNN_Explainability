@@ -81,4 +81,38 @@ def show_saliency_map_grid(inputs, grads, targets, max_indices, ncol=None) -> No
 
     plt.suptitle("Saliency Maps")
     plt.tight_layout()
-    plt.show()
+    return fig
+
+
+def calc_mean_image(dataloader):
+    for i, (input2, target) in enumerate(dataloader):
+        if i == 0:
+            mean_image = input2.mean(dim=0)
+        else:
+            mean_image += input2.mean(dim=0)
+    mean_image /= len(dataloader)
+    return mean_image
+
+
+def show_class_model_visualization_grid(results, ncol=None):
+    if ncol is None:
+        ncol = 5
+
+    results = (results - results.min()) / (results.max() - results.min())
+    # Create subplots
+    num_images = results.size(0)
+    fig, axes = plt.subplots(num_images // ncol, ncol, figsize=(8, 4))
+
+    for i in range(num_images):
+        row = i // ncol
+        col = i % ncol
+
+        # Plot input image
+        img = results[i]
+        npimg = img.numpy()
+        axes[row, col].imshow(np.transpose(npimg, (1, 2, 0)))
+        axes[row, col].set_title(f"Class: {cifar_classes[i]}")
+        axes[row, col].axis("off")
+    plt.suptitle("Class model visualization")
+    plt.tight_layout()
+    return fig
