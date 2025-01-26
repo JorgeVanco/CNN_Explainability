@@ -13,6 +13,7 @@ from src.models import Cifar10ConvModel
 
 
 # static variables
+name: str = "run"
 DATA_PATH: Final[str] = "data"
 NUM_CLASSES: Final[int] = 10
 
@@ -39,10 +40,7 @@ def main() -> None:
     val_data: DataLoader
     train_data, val_data, _ = load_data(DATA_PATH, batch_size=batch_size)
 
-    # define name and writer
-    name: str = (
-        "scheduler_run"  # f"model_lr_{lr}_hs_{hidden_sizes}_{batch_size}_{epochs}"
-    )
+    # define writer
     writer: SummaryWriter = SummaryWriter(f"runs/{name}")
 
     # define model

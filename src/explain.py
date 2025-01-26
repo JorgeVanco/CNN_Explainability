@@ -23,9 +23,10 @@ from src.utils import (
 )
 
 # static variables
+name: str = "run"
 DATA_PATH: Final[str] = "data"
-batch_size: int = 16
-NUM_CLASSES = 10
+NUM_CLASSES: Final[int] = 10
+batch_size: Final[int] = 16
 
 # set device
 device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
@@ -79,7 +80,6 @@ def calculate_class_model_visualization(
 
 def main() -> None:
     train_data, val_data, test_data = load_data(DATA_PATH, batch_size=batch_size)
-    name: str = "scheduler_run"
 
     # define model
     model: RecursiveScriptModule = torch.jit.load(f"models/{name}.pt").to(device)
