@@ -79,5 +79,6 @@ def show_saliency_map_grid(inputs, grads, targets, max_indices, ncol=None) -> No
         axes[row, col + 1].set_title(f"Pred: {cifar_classes[max_indices[i].item()]}")
         axes[row, col + 1].axis("off")
 
+    plt.suptitle("Saliency Maps")
     plt.tight_layout()
     plt.show()
