@@ -1,5 +1,4 @@
 import torch
-
 import os
 import numpy as np
 import random
@@ -67,5 +66,5 @@ def accuracy(predictions: torch.Tensor, targets: torch.Tensor) -> torch.Tensor:
         the accuracy in a tensor of a single element.
     """
 
-    predictions: torch.Tensor = torch.argmax(predictions, dim=-1)
+    predictions = torch.argmax(predictions, dim=-1)
     return torch.sum(predictions == targets) / predictions.shape[0]

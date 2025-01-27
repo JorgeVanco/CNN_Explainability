@@ -29,22 +29,24 @@ NUM_CLASSES: Final[int] = 10
 batch_size: Final[int] = 16
 
 # set device
-device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+device: torch.device = (
+    torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+)
 
 
 def calculate_saliency_map(
     model: torch.nn.Module,
     dataloader: DataLoader,
-) -> None:
+) -> plt.Figure:
     # Freeze parameters
     freeze_model(model)
 
     # get a batch
     inputs, targets = next(iter(dataloader))
 
-    max_indices = compute_gradients_input(model, inputs, device)
+    max_indices: torch.Tensor = compute_gradients_input(model, inputs, device)
 
-    saliency_map_grid = show_saliency_map_grid(
+    saliency_map_grid: plt.Figure = show_saliency_map_grid(
         inputs.detach().cpu(), inputs.grad, targets, max_indices, ncol=4
     )
     return saliency_map_grid
@@ -52,7 +54,7 @@ def calculate_saliency_map(
 
 def calculate_class_model_visualization(
     model: torch.nn.Module, dataloader: DataLoader
-) -> None:
+) -> plt.Figure:
     batch, _ = next(iter(dataloader))
     input = torch.zeros(
         (NUM_CLASSES, *batch.shape[1:]), requires_grad=True, device=device
@@ -72,13 +74,16 @@ def calculate_class_model_visualization(
 
     result = input + mean_image
 
-    class_model_visualization_grid = show_class_model_visualization_grid(
+    class_model_visualization_grid: plt.Figure = show_class_model_visualization_grid(
         result.detach().cpu()
     )
     return class_model_visualization_grid
 
 
 def main() -> None:
+    train_data: DataLoader
+    val_data: DataLoader
+    test_data: DataLoader
     train_data, val_data, test_data = load_data(DATA_PATH, batch_size=batch_size)
 
     # define model
@@ -92,11 +97,13 @@ def main() -> None:
     print(f"Model test accuracy: {accuracy}")
 
     # calculate saliency map
-    saliency_map = calculate_saliency_map(model, train_data)
+    saliency_map: plt.Figure = calculate_saliency_map(model, test_data)
     saliency_map.savefig(f"{dir_path}/saliency_map.png")
 
     # calculate class model visualization
-    class_model_visualization = calculate_class_model_visualization(model, train_data)
+    class_model_visualization: plt.Figure = calculate_class_model_visualization(
+        model, train_data
+    )
     class_model_visualization.savefig(f"{dir_path}/class_model_visualization.png")
 
     save_pdf(

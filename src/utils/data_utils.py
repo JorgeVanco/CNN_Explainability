@@ -1,10 +1,6 @@
 # deep learning libraries
-import torch
 import torchvision
-import numpy as np
-import pandas as pd
-from torch.jit import RecursiveScriptModule
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import DataLoader, random_split
 from torchvision import transforms
 
 # other libraries

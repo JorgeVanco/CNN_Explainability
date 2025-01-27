@@ -38,7 +38,9 @@ def compute_gradients_input(
     return max_indices
 
 
-def show_saliency_map_grid(inputs, grads, targets, max_indices, ncol=None) -> None:
+def show_saliency_map_grid(
+    inputs, grads, targets, max_indices, ncol=None
+) -> plt.Figure:
     if ncol is None:
         ncol = 2
 
@@ -85,7 +87,7 @@ def show_saliency_map_grid(inputs, grads, targets, max_indices, ncol=None) -> No
     return fig
 
 
-def calc_mean_image(dataloader):
+def calc_mean_image(dataloader) -> torch.Tensor:
     for i, (input2, target) in enumerate(dataloader):
         if i == 0:
             mean_image = input2.mean(dim=0)
@@ -95,7 +97,7 @@ def calc_mean_image(dataloader):
     return mean_image
 
 
-def show_class_model_visualization_grid(results, ncol=None):
+def show_class_model_visualization_grid(results, ncol=None) -> plt.Figure:
     if ncol is None:
         ncol = 5
 

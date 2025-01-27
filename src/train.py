@@ -51,7 +51,9 @@ def main() -> None:
     optimizer: torch.optim.Optimizer = torch.optim.Adam(
         model.parameters(), lr=lr, weight_decay=1e-4
     )
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
+    scheduler: torch.optim.lr_scheduler.CosineAnnealingLR = (
+        torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=epochs)
+    )
 
     # train loop
     for epoch in tqdm(range(epochs)):

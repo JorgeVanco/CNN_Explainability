@@ -41,9 +41,9 @@ def train_step(
         batch = batch.to(device)
         targets = targets.to(device)
 
-        outputs = model(batch)
+        outputs: torch.Tensor = model(batch)
 
-        loss_val = loss(outputs, targets)
+        loss_val: torch.Tensor = loss(outputs, targets)
         loss_val.backward()
         optimizer.step()
         losses.append(loss_val.item())
@@ -74,20 +74,20 @@ def val_step(
         device: device of model.
     """
 
-    running_loss = 0
-    running_accuracy = 0
+    running_loss: float = 0.0
+    running_accuracy: float = 0.0
     model.eval()
     with torch.no_grad():
         for batch, targets in val_data:
             batch = batch.to(device)
             targets = targets.to(device)
 
-            outputs = model(batch)
+            outputs: torch.Tensor = model(batch)
 
-            loss_val = loss(outputs, targets)
+            loss_val: torch.Tensor = loss(outputs, targets)
 
             running_loss += loss_val.item()
-            running_accuracy += accuracy(outputs, targets)
+            running_accuracy += accuracy(outputs, targets).item()
 
     avg_loss = running_loss / len(val_data)
     avg_accuracy = running_accuracy / len(val_data)
@@ -114,14 +114,14 @@ def test_step(
     """
 
     model.eval()
-    running_accuracy = 0
+    running_accuracy: float = 0.0
     with torch.no_grad():
         for batch, targets in test_data:
             batch = batch.to(device)
             targets = targets.to(device)
 
-            outputs = model(batch)
-            running_accuracy += accuracy(outputs, targets)
+            outputs: torch.Tensor = model(batch)
+            running_accuracy += accuracy(outputs, targets).item()
 
     avg_accuracy = running_accuracy / len(test_data)
 
